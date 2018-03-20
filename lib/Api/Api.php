@@ -12,6 +12,20 @@ abstract class Api
         return $model::find($id);
     }
 
+    abstract public static function post();
+
+    public static function checkPost() {
+        $keysToCheck = static::getModel()::getKeysNeededToCreate();
+
+        foreach ($keysToCheck as $value) {
+            if (!isset($_POST[$value])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     protected static function getHttpCode($code)
     {
         return http_response_code($code);

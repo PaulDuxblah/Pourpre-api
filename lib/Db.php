@@ -12,7 +12,15 @@ class Db
     private static function execute($query)
     {
         $mysqli = self::getMysqli();
-        $result = $mysqli->query($query)->fetch_assoc();
+
+        $result = $mysqli->query($query);
+        if (!$result) {
+            return $mysqli->error;
+        }
+
+        if (strpos($query, 'INSERT INTO') !== false) {
+            $result = \mysqli_insert_id($mysqli);
+        }
         $mysqli->close();
         return $result;
     }
@@ -36,7 +44,18 @@ class Db
         $query = isset($params['limit']) ? self::addLimitToQuery($query, $params['limit']) : $query;
         $query = isset($params['offset']) ? self::addOffsetToQuery($query, $params['offset']) : $query;
 
-        return self::execute($query);
+        $result = self::execute($query);
+        if (is_string($result)) {
+            return $result;
+        }
+
+        $rows = $result->fetch_assoc();
+
+        if (count($rows) == 1 && !is_array(reset($rows))) {
+            return reset($rows);
+        }
+
+        return $rows;
     }
 
     public static function insert($params = [])
@@ -44,7 +63,7 @@ class Db
         $query = 'INSERT INTO ' . $params['from'];
         $query = (isset($params['keys']) && isset($params['values'])) ? self::addInsertsToQuery($query, $params['keys'], $params['values']) : $query;
 
-        echo $query;
+        return self::execute($query);
     }
 
     public static function update($params = [])
@@ -54,7 +73,7 @@ class Db
         $query = isset($params['update']) ? self::addUpdatesToQuery($query, $params['update']) : $query;
         $query = isset($params['where']) ? self::addWheresToQuery($query, $params['where']) : $query;
 
-        echo $query;
+        return self::execute($query);
     }
 
     public static function delete($params = [])
@@ -165,10 +184,8 @@ class Db
     {
         if (! empty($joins)) {
             if (! is_array($joins)) $joins = [$joins];
-            $query .= ' ';
-
             foreach ($joins as $join) {
-                $query .= $join . ' ';
+                $query .= ' JOIN ' . $join . ' ';
             }
         }
 

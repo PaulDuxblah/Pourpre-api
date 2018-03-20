@@ -1,6 +1,11 @@
 <?php
 
-error_reporting('E_STRICT');
+if (!isset($_GET['api']) || !isset($_GET['item'])) {
+    http_response_code(404);
+    die;
+}
+
+error_reporting(E_ALL);
 
 require './init.php';
 
@@ -10,50 +15,69 @@ use Pourpre\Models\User;
 use Pourpre\Api\Api;
 use Pourpre\Api\UserApi;
 
+$getItem = ucfirst($_GET['item']);
+$className = 'Pourpre\Api\\' . $getItem . 'Api';
+
+function noId($getItem) {
+    echo 'You need to set an id to update a ' . strtolower($getItem);
+    http_response_code(400);
+    die;
+}
+
+switch ($_SERVER['REQUEST_METHOD']) {
+    case 'GET':
+        if (!isset($_GET['id'])) {
+            noId($getItem);
+        }
+
+        $result;
+        if (intval($_GET['id']) != 0) {
+            $result = $className::get($_GET['id']);
+        } else {
+            $method = $_GET['id'];
+            $result = $className::$method();
+        }
+
+        if (!$result) {
+            http_response_code(400);
+        }
+
+        echo json_encode($result);
+        break;
+    case 'POST':
+        $result;
+        if (isset($_GET['id'])) {
+            $method = $_GET['id'];
+            $result = $className::$method();
+        } else {
+            $result = $className::post();
+        }
+
+        echo json_encode($result);
+        http_response_code(201);
+        break;
+    case 'PUT':
+        if (! isset($_GET['id'])) {
+            noId($getItem);
+        }
+
+        echo json_encode($className::put());
+        break;
+    case 'DELETE':
+        if (! isset($_GET['id'])) {
+            noId($getItem);
+        }
+        break;
+    default:
+        echo 'We only treat GET, POST, PUT and DELETE HTTP requests.';
+        http_response_code(404);
+        die;
+        break;
+}
+
 // $user = User::authenticate('paulgirardin@hotmail.fr', 'paul');
-$user = UserApi::get(1);
+// $user = UserApi::get(1);
 
-var_dump($user);
-
-// echo '<br><br><br>';
-
-// Db::insert(
-//     [
-//         'from' => 'user',
-//         'keys' => [
-//             'first_name',
-//             'last_name',
-//             'email',
-//             'can_donate'
-//         ],
-//         'values' => [
-//             'Paul',
-//             'Girardin',
-//             'paulgirardin@hotmail.fr',
-//             true
-//         ]
-//     ]
-// );
+// var_dump($user);
 
 // echo '<br><br><br>';
-
-// Db::update(
-//     [
-//         'from' => 'user',
-//         'update' => [
-//             'first_name' => 'Paul',
-//             'last_name' => 'Girardin',
-//             'email' => 'paulgirardin@hotmail.fr',
-//             'can_donate' => false
-//         ]
-//     ]
-// );
-
-// echo '<br><br><br>';
-
-// DB::delete([
-//     'from' => 'user',
-//     'where' => [
-//         'id = 1'
-//     ]
-// ]);

@@ -2,45 +2,46 @@
 
 namespace Pourpre\Models;
 
-use Pourpre\Models\Model;
 use Pourpre\Db;
+
+use Pourpre\Models\Model;
+use Pourpre\Models\Badge;
 
 class User extends Model
 {
-    public $firstName;
-    public $lastName;
-    public $email;
-    public $password;
-    public $bloodType;
-    public $canDonate;
+    const JOIN_TABLES = [
+        'badge' => ['table' => 'user_badge', 'key' => 'user_id'],
+        'meeting' => ['table' => 'user_meeting', 'key' => 'user_id']
+    ];
 
     public static function getTableName()
     {
         return 'user';
     }
 
+    public static function getKeysNeededToCreate()
+    {
+        return [
+            'pseudo',
+            'password'
+        ];
+    }
+
     public static function getDbToObjectConvertionArray()
     {
         return [
-            'first_name'    => 'firstName',
-            'last_name'     => 'lastName',
             'can_donate'    => 'canDonate',
             'blood_type'    => 'bloodType'
         ];
     }
 
     public function __construct($params = []) {
-        $this->firstName    = isset($params['firstName']) ? $params['firstName'] : '';
-        $this->lastName     = isset($params['lastName']) ? $params['lastName'] : '';
-        $this->email        = isset($params['email']) ? $params['email'] : '';
+        $this->id           = isset($params['id']) ? $params['id'] : '';
+        $this->pseudo       = isset($params['pseudo']) ? $params['pseudo'] : '';
         $this->password     = isset($params['password']) ? $params['password'] : '';
         $this->bloodType    = isset($params['bloodType']) ? $params['bloodType'] : '';
         $this->canDonate    = isset($params['canDonate']) ? $params['canDonate'] : '';
-    }
-
-    public function getEncodedPassword()
-    {
-        return hash('sha256', $this->password);
+        $this->avatar       = isset($params['avatar']) ? $params['avatar'] : '';
     }
 
     public static function encodePassword($password)
@@ -48,34 +49,115 @@ class User extends Model
         return hash('sha256', $password);
     }
 
-    public static function authenticate($email, $password)
+    public function setEncodedPassword($password) {
+        $this->password = $this->encodePassword($password);
+    }
+
+    public static function authenticate($pseudo, $password)
     {
-        if (! $user = self::login($email, $password)) {
+        if (! $user = self::login($pseudo, $password)) {
             return false;
         }
 
         return $user;
     }
 
-    public static function login($email, $password)
+    public static function login($pseudo, $password)
     {
         $user = self::select([
-            'where' => ['email = "' . Db::escapeVar($email) . '"', 'password = "' . self::encodePassword($password) . '"']
+            'where' => [
+                'pseudo = "' . Db::escapeVar($pseudo) . '"', 
+                'password = "' . self::encodePassword($password) . '"'
+            ]
         ]);
 
         if ($user) return $user;
 
-        if (self::findByEmail($email)) {
+        if (self::findByPseudo($pseudo)) {
             return 'Wrong password';
         }
 
-        return 'Unknown email';
+        return 'Unknown pseudo';
     }
 
-    public static function findByEmail($email)
+    public static function findByPseudo($pseudo)
     {
         return self::select([
-            'where' => ['email = "' . Db::escapeVar($email) . '"']
+            'where' => ['pseudo = "' . Db::escapeVar($pseudo) . '"']
         ]);
+    }
+
+    public static function find($id)
+    {
+        $user = self::select([
+            'where' => 'id = ' . $id
+        ]);
+
+        if (!$user) {
+            return false;
+        }
+
+        $user->loadBadges();
+        $user->loadMeetings();
+        $user->loadNumberOfEscort();
+        $user->loadNumberOfDonations();
+        return $user;
+    }
+
+    private function loadBadges($refresh = false)
+    {
+        if (!isset($this->badges) || empty($this->badges) || $refresh) {
+            $this->badges = self::select([
+                'select' => [Badge::getTableName() . '.*'],
+                'where' => [self::getTableName() . '.id = ' . $this->id],
+                'join' => self::getJoinQueryTo('badge')
+            ]);
+        }
+    }
+
+    private function loadMeetings($refresh = false)
+    {
+        if (!isset($this->meetings) || empty($this->meetings) || $refresh) {
+            $this->meetings = self::select([
+                'select' => [Meeting::getTableName() . '.*'],
+                'where' => [self::getTableName() . '.id = ' . $this->id],
+                'join' => self::getJoinQueryTo('meeting')
+            ]);
+        }
+    }
+
+    private function loadNumberOfEscort($refresh = false)
+    {
+        if (!isset($this->escorts) || $refresh) {
+            $this->escorts = Db::select([
+                'select' => ['COUNT(' . Meeting::getTableName() . '.id)'],
+                'from' => self::getTableName(),
+                'where' => [
+                    self::getTableName() . '.id = ' . $this->id,
+                    Meeting::getTableName() . '.creator != ' . $this->id
+                ],
+                'join' => self::getJoinQueryTo('meeting')
+            ]);
+        }
+    }
+
+    private function loadNumberOfDonations($refresh = false)
+    {
+        if (!isset($this->donations) || $refresh) {
+            $this->donations = Db::select([
+                'select' => ['COUNT(' . Meeting::getTableName() . '.id)'],
+                'from' => self::getTableName(),
+                'where' => [
+                    self::getTableName() . '.id = ' . $this->id,
+                    Meeting::getTableName() . '.creator = ' . $this->id
+                ],
+                'join' => self::getJoinQueryTo('meeting')
+            ]);
+        }
+    }
+
+    public function isCreatorOfMeeting($meeting)
+    {
+        return $this->id == $meeting->creator;
     }
 }
