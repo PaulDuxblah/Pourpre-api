@@ -112,6 +112,7 @@ class User extends Model
                 'where' => [self::getTableName() . '.id = ' . $this->id],
                 'join' => self::getJoinQueryTo('badge')
             ]);
+            if (is_null($this->badges)) $this->badges = [];
         }
     }
 
@@ -123,6 +124,7 @@ class User extends Model
                 'where' => [self::getTableName() . '.id = ' . $this->id],
                 'join' => self::getJoinQueryTo('meeting')
             ]);
+            if (is_null($this->meetings)) $this->meetings = [];
         }
     }
 
@@ -138,6 +140,7 @@ class User extends Model
                 ],
                 'join' => self::getJoinQueryTo('meeting')
             ]);
+            if (is_null($this->escorts)) $this->escorts = 0;
         }
     }
 
@@ -153,6 +156,7 @@ class User extends Model
                 ],
                 'join' => self::getJoinQueryTo('meeting')
             ]);
+            if (is_null($this->donations)) $this->donations = 0;
         }
     }
 
