@@ -107,6 +107,7 @@ class User extends Model
         $user->loadMeetings();
         $user->loadNumberOfEscort();
         $user->loadNumberOfDonations();
+        $user->loadNumberOfSponsorships();
         return $user;
     }
 
@@ -169,5 +170,19 @@ class User extends Model
     public function isCreatorOfMeeting($meeting)
     {
         return $this->id == $meeting->creator;
+    }
+
+    private function loadNumberOfSponsorships($refresh = false)
+    {
+        if (!isset($this->sponsorships) || $refresh) {
+            $this->sponsorships = Db::select([
+                'select' => ['COUNT(' . self::getTableName() . '.id)'],
+                'from' => self::getTableName(),
+                'where' => [
+                    self::getTableName() . '.sponsor_id = ' . $this->id
+                ]
+            ]);
+            if (is_null($this->sponsorships)) $this->sponsorships = 0;
+        }
     }
 }
