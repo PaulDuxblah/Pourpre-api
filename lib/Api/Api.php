@@ -4,6 +4,37 @@ namespace Pourpre\Api;
 
 abstract class Api
 {
+    public static function manageTokenAuthentication($userId)
+    {
+        if (!static::checkIfTokenExists()) {
+            static::getHttpCode(401);
+            return false;
+        }
+
+        $user = User::find($userId);
+        if (! $user) {
+            static::getHttpCode(404);
+            return false;
+        }
+
+        if (!static::checkToken($user->token)) {
+            static::getHttpCode(401);
+            return false;
+        }
+
+        return true;
+    }
+
+    public static function checkIfTokenExists()
+    {
+        return isset(apache_request_headers()['token']);
+    }
+
+    public static function checkToken($dbUserToken)
+    {
+        return static::checkIfTokenExists() && apache_request_headers()['token'] === $dbUserToken;
+    }
+
     static abstract public function getModel();
 
     public static function get($id)

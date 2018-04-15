@@ -17,7 +17,22 @@ class UserApi extends Api
         if (! isset($_GET['pseudo']) || ! isset($_GET['password'])) return self::getHttpCode(400);
 
         $model = self::getModel();
-        return $model::authenticate($_GET['pseudo'], $_GET['password']);
+        $user = $model::authenticate($_GET['pseudo'], $_GET['password']);
+
+        if (!$user) return self::getHttpCode(404);
+
+        return $user;
+    }
+
+    public static function get($id)
+    {
+        if (! static::checkIfTokenExists()) return self::getHttpCode(400);
+
+        $model = self::getModel();
+        $user = $model::find($id);
+        if (self::checkToken($user->token)) return $user;
+
+        return self::getHttpCode(401);
     }
 
     static public function post()
@@ -30,6 +45,7 @@ class UserApi extends Api
         $user = new User();
         $user->pseudo = $_POST['pseudo'];
         $user->setEncodedPassword($_POST['password']);
+        $user->generateToken();
 
         if (isset($_POST['canDonate'])) {
             $user->canDonate = $_POST['canDonate'];
@@ -58,6 +74,8 @@ class UserApi extends Api
             http_response_code(400);
             die;
         }
+
+        if (!self::checkToken($user->token)) return self::getHttpCode(401);
 
         $putfp = fopen('php://input', 'r');
         $putData = [];

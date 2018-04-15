@@ -42,11 +42,17 @@ class User extends Model
         $this->bloodType    = isset($params['bloodType']) ? $params['bloodType'] : '';
         $this->canDonate    = isset($params['canDonate']) ? $params['canDonate'] : '';
         $this->avatar       = isset($params['avatar']) ? $params['avatar'] : '';
+        $this->token        = isset($params['token']) ? $params['token'] : '';
     }
 
     public static function encodePassword($password)
     {
         return hash('sha256', $password);
+    }
+
+    public function generateToken()
+    {
+        $this->token = hash('sha256', $pseudo);
     }
 
     public function setEncodedPassword($password) {

@@ -19,6 +19,8 @@ class MeetingApi extends Api
             http_response_code(400);
             die;
         }
+        
+        if (!static::manageTokenAuthentication($_POST['creator'])) return false;
 
         $meeting = new Meeting();
         $meeting->longitude = $_POST['longitude'];

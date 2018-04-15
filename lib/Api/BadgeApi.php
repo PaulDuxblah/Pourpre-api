@@ -20,6 +20,8 @@ class BadgeApi extends Api
             die;
         }
 
+        if (! static::manageTokenAuthentication($_POST['user_id'])) return false;
+
         $result = Db::insert([
             'from'      => self::getModel()::JOIN_TABLES['user']['table'],
             'keys'      => [self::getModel()::JOIN_TABLES['user']['key'], User::JOIN_TABLES['badge']['key']],
