@@ -43,6 +43,17 @@ class User extends Model
         $this->canDonate    = isset($params['canDonate']) ? $params['canDonate'] : '';
         $this->avatar       = isset($params['avatar']) ? $params['avatar'] : '';
         $this->token        = isset($params['token']) ? $params['token'] : '';
+
+        if (!empty($this->id)) $this->loadData(); 
+    }
+
+    public function loadData()
+    {
+        $this->loadBadges();
+        $this->loadMeetings();
+        $this->loadNumberOfEscort();
+        $this->loadNumberOfDonations();
+        $this->loadNumberOfSponsorships();
     }
 
     public static function encodePassword($password)
@@ -103,11 +114,6 @@ class User extends Model
             return false;
         }
 
-        $user->loadBadges();
-        $user->loadMeetings();
-        $user->loadNumberOfEscort();
-        $user->loadNumberOfDonations();
-        $user->loadNumberOfSponsorships();
         return $user;
     }
 
