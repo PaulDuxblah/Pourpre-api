@@ -46,6 +46,7 @@ class UserApi extends Api
         $user->pseudo = $_POST['pseudo'];
         $user->setEncodedPassword($_POST['password']);
         $user->generateToken();
+        $user->gender = $_POST['gender'];
 
         if (isset($_POST['canDonate'])) {
             $user->canDonate = $_POST['canDonate'];

@@ -23,7 +23,8 @@ class User extends Model
     {
         return [
             'pseudo',
-            'password'
+            'password',
+            'gender'
         ];
     }
 
@@ -43,6 +44,7 @@ class User extends Model
         $this->canDonate    = isset($params['canDonate']) ? $params['canDonate'] : '';
         $this->avatar       = isset($params['avatar']) ? $params['avatar'] : '';
         $this->token        = isset($params['token']) ? $params['token'] : '';
+        $this->gender       = isset($params['gender']) ? $params['gender'] : '';
 
         if (!empty($this->id)) $this->loadData(); 
     }

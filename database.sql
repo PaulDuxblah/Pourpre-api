@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  mar. 17 avr. 2018 à 13:19
+-- Généré le :  mar. 17 avr. 2018 à 15:37
 -- Version du serveur :  5.7.19
 -- Version de PHP :  7.1.9
 
@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pseudo` varchar(255) NOT NULL,
   `password` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `gender` enum('Homme','Femme') NOT NULL,
   `blood_type` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
   `can_donate` enum('0','1') CHARACTER SET utf8 DEFAULT '1',
   `avatar` varchar(25) CHARACTER SET utf8 DEFAULT NULL,
@@ -71,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `sponsor_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `pseudo` (`pseudo`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
