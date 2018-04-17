@@ -66,10 +66,10 @@ abstract class Model
 
     public function save()
     {
-        if (isset($this->id)) {
-            $this->update();
+        if (isset($this->id) && !empty($this->id)) {
+            return $this->update();
         } else {
-            $this->insert();
+            return $this->insert();
         }
     }
 

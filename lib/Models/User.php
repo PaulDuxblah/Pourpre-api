@@ -63,7 +63,7 @@ class User extends Model
 
     public function generateToken()
     {
-        $this->token = hash('sha256', $pseudo);
+        $this->token = hash('sha256', $this->pseudo);
     }
 
     public function setEncodedPassword($password) {

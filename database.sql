@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  mar. 17 avr. 2018 à 08:11
+-- Généré le :  mar. 17 avr. 2018 à 13:19
 -- Version du serveur :  5.7.19
 -- Version de PHP :  7.1.9
 
@@ -69,8 +69,9 @@ CREATE TABLE IF NOT EXISTS `user` (
   `avatar` varchar(25) CHARACTER SET utf8 DEFAULT NULL,
   `token` varchar(255) NOT NULL,
   `sponsor_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `pseudo` (`pseudo`)
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
