@@ -24,7 +24,7 @@ function noId($getItem) {
     die;
 }
 
-$fileGetContents = file_get_contents('php://input');
+$fileGetContents = json_decode(file_get_contents('php://input'));
 
 Db::insert([
     'from' => 'logs',
