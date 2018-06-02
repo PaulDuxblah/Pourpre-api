@@ -24,6 +24,12 @@ function noId($getItem) {
     die;
 }
 
+if (isset($_POST['body'])) {
+    foreach ($_POST['body'] as $key => $value) {
+        $_POST[$key] = $value;
+    }
+}
+
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
         if (!isset($_GET['id'])) {
