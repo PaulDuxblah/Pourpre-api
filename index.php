@@ -44,11 +44,11 @@ Db::insert([
     ]
 ]);
 
-// if ($fileGetContents) {
-//     foreach ($_POST['body'] as $key => $value) {
-//         $_POST[$key] = $value;
-//     }
-// }
+if ($fileGetContents) {
+    foreach ($fileGetContents as $key => $value) {
+        $_POST[$key] = $value;
+    }
+}
 
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
