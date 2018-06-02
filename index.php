@@ -33,7 +33,10 @@ Db::insert([
     ],
     'values' => [
         $_SERVER['REQUEST_METHOD'],
-        json_encode($_POST),
+        json_encode([
+            'GET' => $_GET,
+            'POST' => $_POST
+        ]),
         date('Y-m-d H:i:s')
     ]
 ]);
