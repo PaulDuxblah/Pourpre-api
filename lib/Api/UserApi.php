@@ -19,7 +19,7 @@ class UserApi extends Api
         $model = self::getModel();
         $user = $model::authenticate($_GET['pseudo'], $_GET['password']);
 
-        if (!$user) return self::getHttpCode(404);      
+        if (!$user) return self::getHttpCode(404);
 
         return $user;
     }
