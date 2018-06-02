@@ -24,6 +24,20 @@ function noId($getItem) {
     die;
 }
 
+Db::insert([
+    'from' => 'logs',
+    'keys' => [
+        'method',
+        'message',
+        'date'
+    ],
+    'values' => [
+        $_SERVER['REQUEST_METHOD'],
+        json_encode($_POST),
+        date('Y-m-d H:i:s')
+    ]
+]);
+
 if (isset($_POST['body'])) {
     foreach ($_POST['body'] as $key => $value) {
         $_POST[$key] = $value;
