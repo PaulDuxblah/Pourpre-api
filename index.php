@@ -24,6 +24,8 @@ function noId($getItem) {
     die;
 }
 
+$fileGetContents = file_get_contents('php://input');
+
 Db::insert([
     'from' => 'logs',
     'keys' => [
@@ -35,17 +37,18 @@ Db::insert([
         $_SERVER['REQUEST_METHOD'],
         json_encode([
             'GET' => $_GET,
-            'POST' => $_POST
+            'POST' => $_POST,
+            'file_get_contents' => $fileGetContents
         ]),
         date('Y-m-d H:i:s')
     ]
 ]);
 
-if (isset($_POST['body'])) {
-    foreach ($_POST['body'] as $key => $value) {
-        $_POST[$key] = $value;
-    }
-}
+// if ($fileGetContents) {
+//     foreach ($_POST['body'] as $key => $value) {
+//         $_POST[$key] = $value;
+//     }
+// }
 
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
