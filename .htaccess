@@ -1,4 +1,5 @@
 RewriteEngine on
-RewriteRule ^api\/([a-z]*)\/([a-z]+)\/([a-z]*=[a-zA-Z0-9]*)\/([a-z]*=[a-zA-Z0-9]*)$ index.php?api=1&item=$1&id=$2&$3&$4
+RewriteRule ^api\/([a-z]*)\/([a-z]+)\/([a-z]*=[a-zA-Z0-9]*)\/([a-z]*=[a-zA-Z0-9]*)$ 
+RewriteRule ^api\/([a-z]*)\/([0-9]+)$ index.php?api=1&item=$1&id=$2
 RewriteRule ^api\/([a-z]*)\/?(.*)$ index.php?api=1&item=$1&$2
 RewriteRule ^api\/([a-z]*)\/?$ index.php?api=1&item=$1
