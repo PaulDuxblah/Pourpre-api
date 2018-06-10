@@ -116,6 +116,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
                     $result = $className::findBy($_GET['param'], $_GET['id']);
                 } else {
+                    $method = $_GET['id'];
+
                     Db::insert([
                         'from' => 'logs',
                         'keys' => [
@@ -125,12 +127,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
                         ],
                         'values' => [
                             $_SERVER['REQUEST_METHOD'],
-                            'get method directly',
+                            'get method directly: ' . $method,
                             date('Y-m-d H:i:s')
                         ]
                     ]);
 
-                    $method = $_GET['id'];
                     $result = $className::$method();
                 }
             }

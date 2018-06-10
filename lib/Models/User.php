@@ -102,6 +102,20 @@ class User extends Model
 
     public static function login($pseudo, $password)
     {
+        Db::insert([
+            'from' => 'logs',
+            'keys' => [
+                'method',
+                'message',
+                'date'
+            ],
+            'values' => [
+                $_SERVER['REQUEST_METHOD'],
+                'login ' . $pseudo . ' ' . $password,
+                date('Y-m-d H:i:s')
+            ]
+        ]);
+
         $user = self::select([
             'where' => [
                 'pseudo = "' . Db::escapeVar($pseudo) . '"', 
