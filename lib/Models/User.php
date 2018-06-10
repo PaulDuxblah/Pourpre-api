@@ -134,6 +134,7 @@ class User extends Model
                 date('Y-m-d H:i:s')
             ]
         ]);
+        
         $user = self::select([
             'where' => [
                 'pseudo = "' . Db::escapeVar($pseudo) . '"', 

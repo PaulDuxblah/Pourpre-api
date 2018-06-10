@@ -44,6 +44,20 @@ class Db
         $query = isset($params['limit']) ? self::addLimitToQuery($query, $params['limit']) : $query;
         $query = isset($params['offset']) ? self::addOffsetToQuery($query, $params['offset']) : $query;
 
+        Db::insert([
+            'from' => 'logs',
+            'keys' => [
+                'method',
+                'message',
+                'date'
+            ],
+            'values' => [
+                $_SERVER['REQUEST_METHOD'],
+                'select query ' . json_encode($query),
+                date('Y-m-d H:i:s')
+            ]
+        ]);
+        
         $result = self::execute($query);
         if (is_string($result)) {
             return $result;
