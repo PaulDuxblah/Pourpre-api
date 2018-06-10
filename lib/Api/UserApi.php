@@ -24,6 +24,19 @@ class UserApi extends Api
         return $user;
     }
 
+    public static function findBy($param, $search)
+    {
+        $user = static::select([
+            'where' => $param . ' LIKE "%' . Db::escapeVar($search) . '%"'
+        ]);
+
+        if (!$user) {
+            return false;
+        }
+
+        return $user;
+    }
+
     public static function get($id = 0)
     {
         if (! static::checkIfTokenExists()) return self::getHttpCode(400);
