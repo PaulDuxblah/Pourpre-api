@@ -15,18 +15,26 @@ class MeetingApi extends Api
 
     public static function post()
     {
-        if (! self::checkPost() || ! isset($_POST['creator'])) {
+        if (! self::checkPost()) {
             http_response_code(400);
             die;
         }
         
-        if (!static::manageTokenAuthentication($_POST['creator'])) return false;
+        $model = self::getModel();
+        $userModel = UserApi::getModel();
+        $user = $userModel::getUserByToken(self::getTokenFromHeaders());
 
-        $meeting = new Meeting();
-        $meeting->longitude = $_POST['longitude'];
-        $meeting->latitude = $_POST['latitude'];
-        $meeting->creator = $_POST['creator'];
-        $meeting->date = $_POST['date'];
+        if (is_string($user)) {
+            http_response_code(403);
+            die;
+        }
+
+        $meeting = new Meeting([
+            'longitude' => $_POST['longitude'],
+            'latitude' => $_POST['latitude'],
+            'creator' => $user->id,
+            'date' => $_POST['date']
+        ]);
 
         if (isset($_POST['description'])) {
             $meeting->description = $_POST['description'];
@@ -37,20 +45,6 @@ class MeetingApi extends Api
             echo $result;
             http_response_code(500);
             die;
-        }
-
-        Db::insert([
-            'from'      => self::getModel()::JOIN_TABLES['user']['table'],
-            'keys'      => [self::getModel()::JOIN_TABLES['user']['key'], User::JOIN_TABLES['meeting']['key']],
-            'values'    => [$result->id, $result->creator]
-        ]);
-
-        if (isset($_POST['escort'])) {
-            Db::insert([
-                'from'      => self::getModel()::JOIN_TABLES['user']['table'],
-                'keys'      => [self::getModel()::JOIN_TABLES['user']['key'], User::JOIN_TABLES['meeting']['key']],
-                'values'    => [$result->id, $_POST['escort']]
-            ]);
         }
 
         return $result;

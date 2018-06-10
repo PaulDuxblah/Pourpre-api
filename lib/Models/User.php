@@ -73,7 +73,7 @@ class User extends Model
         $this->password = $this->encodePassword($password);
     }
 
-    public function getUserByToken($token)
+    public static function getUserByToken($token)
     {
         $user = self::select([
             'where' => [
@@ -86,7 +86,7 @@ class User extends Model
         return 'Unknown token';
     }
 
-    public function tokenExistsInDB($token)
+    public static function tokenExistsInDB($token)
     {
         return is_string(self::getUserByToken($token)) ? false : true;
     }
