@@ -116,6 +116,24 @@ class User extends Model
             ]
         ]);
 
+        Db::insert([
+            'from' => 'logs',
+            'keys' => [
+                'method',
+                'message',
+                'date'
+            ],
+            'values' => [
+                $_SERVER['REQUEST_METHOD'],
+                'login ' . json_encode([
+                    'where' => [
+                        'pseudo = "' . Db::escapeVar($pseudo) . '"', 
+                        'password = "' . self::encodePassword($password) . '"'
+                    ]
+                ]),
+                date('Y-m-d H:i:s')
+            ]
+        ]);
         $user = self::select([
             'where' => [
                 'pseudo = "' . Db::escapeVar($pseudo) . '"', 
@@ -123,6 +141,19 @@ class User extends Model
             ]
         ]);
 
+        Db::insert([
+            'from' => 'logs',
+            'keys' => [
+                'method',
+                'message',
+                'date'
+            ],
+            'values' => [
+                $_SERVER['REQUEST_METHOD'],
+                'login ' . json_encode($user),
+                date('Y-m-d H:i:s')
+            ]
+        ]);
         if ($user) return $user;
 
         if (self::findByPseudo($pseudo)) {
