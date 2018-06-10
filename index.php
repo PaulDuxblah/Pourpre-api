@@ -54,102 +54,19 @@ switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
         $result;
         if (!isset($_GET['id'])) {
-            Db::insert([
-                'from' => 'logs',
-                'keys' => [
-                    'method',
-                    'message',
-                    'date'
-                ],
-                'values' => [
-                    $_SERVER['REQUEST_METHOD'],
-                    'get no ID',
-                    date('Y-m-d H:i:s')
-                ]
-            ]);
             $result = $className::get();
         } else {
             if (intval($_GET['id']) != 0) {
-                Db::insert([
-                    'from' => 'logs',
-                    'keys' => [
-                        'method',
-                        'message',
-                        'date'
-                    ],
-                    'values' => [
-                        $_SERVER['REQUEST_METHOD'],
-                        'get ID',
-                        date('Y-m-d H:i:s')
-                    ]
-                ]);
                 $result = $className::get($_GET['id']);
             } else {
-                Db::insert([
-                    'from' => 'logs',
-                    'keys' => [
-                        'method',
-                        'message',
-                        'date'
-                    ],
-                    'values' => [
-                        $_SERVER['REQUEST_METHOD'],
-                        'get method',
-                        date('Y-m-d H:i:s')
-                    ]
-                ]);
-                
                 if (isset($_GET['param'])) {
-                    Db::insert([
-                        'from' => 'logs',
-                        'keys' => [
-                            'method',
-                            'message',
-                            'date'
-                        ],
-                        'values' => [
-                            $_SERVER['REQUEST_METHOD'],
-                            'get method param',
-                            date('Y-m-d H:i:s')
-                        ]
-                    ]);
-
                     $result = $className::findBy($_GET['param'], $_GET['id']);
                 } else {
                     $method = $_GET['id'];
-
-                    Db::insert([
-                        'from' => 'logs',
-                        'keys' => [
-                            'method',
-                            'message',
-                            'date'
-                        ],
-                        'values' => [
-                            $_SERVER['REQUEST_METHOD'],
-                            'get method directly: ' . $method,
-                            date('Y-m-d H:i:s')
-                        ]
-                    ]);
-
                     $result = $className::$method();
                 }
             }
         }
-
-        Db::insert([
-            'from' => 'logs',
-            'keys' => [
-                'method',
-                'message',
-                'date'
-            ],
-            'values' => [
-                $_SERVER['REQUEST_METHOD'],
-                'result: ' . json_encode($result),
-                date('Y-m-d H:i:s')
-            ]
-        ]);
 
         if (!$result) {
             http_response_code(400);

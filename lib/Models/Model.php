@@ -46,19 +46,6 @@ abstract class Model
     {
         $params = [];
         foreach ($row as $key => $value) {
-            Db::insert([
-                'from' => 'logs',
-                'keys' => [
-                    'method',
-                    'message',
-                    'date'
-                ],
-                'values' => [
-                    $_SERVER['REQUEST_METHOD'],
-                    'generateModelFromRow ' . json_encode($key . ' => ' . $value),
-                    date('Y-m-d H:i:s')
-                ]
-            ]);
             if (isset(static::getDbToObjectConvertionArray()[$key])) {
                 $params[static::getDbToObjectConvertionArray()[$key]] = $value;
             } else {
