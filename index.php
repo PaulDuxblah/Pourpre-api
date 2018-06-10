@@ -59,8 +59,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
             if (intval($_GET['id']) != 0) {
                 $result = $className::get($_GET['id']);
             } else {
-                $method = $_GET['id'];
-                $result = $className::$method();
+                if (isset($_GET['param'])) {
+                    $result = $className::findBy($_GET['param'], $_GET['id']);
+                } else {
+                    $method = $_GET['id'];
+                    $result = $className::$method();
+                }
             }
         }
 

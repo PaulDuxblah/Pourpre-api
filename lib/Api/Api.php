@@ -48,6 +48,11 @@ abstract class Api
         return $model::find($id);
     }
 
+    public static function findBy($param, $needle) {
+        $model = static::getModel();
+        return $model::find($param, $id);
+    }
+
     abstract public static function post();
 
     public static function checkPost() {

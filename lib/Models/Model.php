@@ -62,10 +62,17 @@ abstract class Model
         return static::select();
     }
 
+    public static function findBy($param, $search)
+    {
+        return static::select([
+            'where' => $param . ' LIKE "%' . Db::escapeVar($search) . '%"'
+        ]);
+    }
+
     public static function find($id)
     {
-        return self::select([
-            'where' => 'id = ' . $id
+        return static::select([
+            'where' => 'id = ' . Db::escapeVar($id)
         ]);
     }
 
