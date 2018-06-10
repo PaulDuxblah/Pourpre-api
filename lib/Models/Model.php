@@ -71,7 +71,7 @@ abstract class Model
 
     public static function find($id)
     {
-        return static::select([
+        return self::select([
             'where' => 'id = ' . Db::escapeVar($id)
         ]);
     }
