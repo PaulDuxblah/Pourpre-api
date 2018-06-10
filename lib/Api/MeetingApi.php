@@ -45,7 +45,7 @@ class MeetingApi extends Api
             'values'    => [$result->id, $result->creator]
         ]);
 
-        if (isset($_POST['escort'])) {
+        if (isset($_POST['escort']) && $_POST['escort'] > 0) {
             Db::insert([
                 'from'      => self::getModel()::JOIN_TABLES['user']['table'],
                 'keys'      => [self::getModel()::JOIN_TABLES['user']['key'], User::JOIN_TABLES['meeting']['key']],
