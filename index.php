@@ -100,13 +100,55 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 ]);
                 
                 if (isset($_GET['param'])) {
+                    Db::insert([
+                        'from' => 'logs',
+                        'keys' => [
+                            'method',
+                            'message',
+                            'date'
+                        ],
+                        'values' => [
+                            $_SERVER['REQUEST_METHOD'],
+                            'get method param',
+                            date('Y-m-d H:i:s')
+                        ]
+                    ]);
+
                     $result = $className::findBy($_GET['param'], $_GET['id']);
                 } else {
+                    Db::insert([
+                        'from' => 'logs',
+                        'keys' => [
+                            'method',
+                            'message',
+                            'date'
+                        ],
+                        'values' => [
+                            $_SERVER['REQUEST_METHOD'],
+                            'get method directly',
+                            date('Y-m-d H:i:s')
+                        ]
+                    ]);
+
                     $method = $_GET['id'];
                     $result = $className::$method();
                 }
             }
         }
+
+        Db::insert([
+            'from' => 'logs',
+            'keys' => [
+                'method',
+                'message',
+                'date'
+            ],
+            'values' => [
+                $_SERVER['REQUEST_METHOD'],
+                'result: ' . json_encode($result),
+                date('Y-m-d H:i:s')
+            ]
+        ]);
 
         if (!$result) {
             http_response_code(400);
