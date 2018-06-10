@@ -68,8 +68,27 @@ class User extends Model
         $this->token = hash('sha256', $this->pseudo);
     }
 
-    public function setEncodedPassword($password) {
+    public function setEncodedPassword($password)
+    {
         $this->password = $this->encodePassword($password);
+    }
+
+    public function getUserByToken($token)
+    {
+        $user = self::select([
+            'where' => [
+                'token = "' . Db::escapeVar($token) . '"'
+            ]
+        ]);
+
+        if ($user) return $user;
+
+        return 'Unknown token';
+    }
+
+    public function tokenExistsInDB($token)
+    {
+        return is_string(self::getUserByToken($token)) ? false : true;
     }
 
     public static function authenticate($pseudo, $password)

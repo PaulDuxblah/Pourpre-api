@@ -57,6 +57,11 @@ abstract class Model
         return new $class($params);
     }
 
+    public static function findAll()
+    {
+        return static::select();
+    }
+
     public static function find($id)
     {
         return self::select([

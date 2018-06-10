@@ -24,13 +24,21 @@ class UserApi extends Api
         return $user;
     }
 
-    public static function get($id)
+    public static function get($id = 0)
     {
         if (! static::checkIfTokenExists()) return self::getHttpCode(400);
 
         $model = self::getModel();
-        $user = $model::find($id);
-        if (self::checkToken($user->token)) return $user;
+
+        if ($id > 0) {
+            $user = $model::find($id);
+            if (self::checkToken($user->token)) return $user;
+        } elseif (
+            self::checkIfTokenExists() 
+            && $model::tokenExistsInDB(self::getTokenFromHeaders())
+        ) {
+            return $model::findAll();
+        }
 
         return self::getHttpCode(401);
     }
