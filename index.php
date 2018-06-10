@@ -52,16 +52,16 @@ if ($fileGetContents) {
 
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
-        if (!isset($_GET['id'])) {
-            noId($getItem);
-        }
-
         $result;
-        if (intval($_GET['id']) != 0) {
-            $result = $className::get($_GET['id']);
+        if (!isset($_GET['id'])) {
+            $result = $className::get();
         } else {
-            $method = $_GET['id'];
-            $result = $className::$method();
+            if (intval($_GET['id']) != 0) {
+                $result = $className::get($_GET['id']);
+            } else {
+                $method = $_GET['id'];
+                $result = $className::$method();
+            }
         }
 
         if (!$result) {

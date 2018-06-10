@@ -25,6 +25,11 @@ abstract class Api
         return true;
     }
 
+    public static function getTokenFromHeaders()
+    {
+        return apache_request_headers()['token'];
+    }
+
     public static function checkIfTokenExists()
     {
         return isset(apache_request_headers()['token']);
@@ -32,7 +37,7 @@ abstract class Api
 
     public static function checkToken($dbUserToken)
     {
-        return static::checkIfTokenExists() && apache_request_headers()['token'] === $dbUserToken;
+        return static::checkIfTokenExists() && static::getTokenFromHeaders() === $dbUserToken;
     }
 
     static abstract public function getModel();
