@@ -5,6 +5,7 @@ namespace Pourpre\Models;
 use Pourpre\Db;
 
 use Pourpre\Models\Model;
+use Pourpre\Models\Meeting;
 use Pourpre\Models\Badge;
 
 class User extends Model
@@ -155,7 +156,7 @@ class User extends Model
                 date('Y-m-d H:i:s')
             ]
         ]);
-        
+
         if ($user) return $user;
 
         if (self::findByPseudo($pseudo)) {
