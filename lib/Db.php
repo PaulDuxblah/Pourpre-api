@@ -13,6 +13,19 @@ class Db
     {
         $mysqli = self::getMysqli();
 
+        Db::insert([
+            'from' => 'logs',
+            'keys' => [
+                'method',
+                'message',
+                'date'
+            ],
+            'values' => [
+                $_SERVER['REQUEST_METHOD'],
+                json_encode($query),
+                date('Y-m-d H:i:s')
+            ]
+        ]);
         $result = $mysqli->query($query);
         if (!$result) {
             return $mysqli->error;
