@@ -3,6 +3,7 @@
 namespace Pourpre\Models;
 
 use Pourpre\Models\Model;
+use Pourpre\Models\User;
 use Pourpre\Db;
 
 class Meeting extends Model
@@ -30,6 +31,15 @@ class Meeting extends Model
     public static function getDbToObjectConvertionArray()
     {
         return [];
+    }
+
+    public static function getAllOfUser($id)
+    {
+        return self::select([
+            'select' => [self::getTableName() . '.*'],
+            'where' => [User::getTableName() . '.id = ' . $id],
+            'join' => self::getJoinQueryTo('user')
+        ]);
     }
 
     public function __construct($params = []) {

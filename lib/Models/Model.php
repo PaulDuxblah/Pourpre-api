@@ -170,7 +170,7 @@ abstract class Model
         return static::JOIN_TABLES[$tableName]['key'];
     }
 
-    public function getJoinQueryTo($tableName)
+    public static function getJoinQueryTo($tableName)
     {
         $targetClass = 'Pourpre\Models\\' . ucfirst($tableName);
         return [

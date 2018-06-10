@@ -201,11 +201,7 @@ class User extends Model
     private function loadMeetings($refresh = false)
     {
         if (!isset($this->meetings) || empty($this->meetings) || $refresh) {
-            $this->meetings = self::select([
-                'select' => [Meeting::getTableName() . '.*'],
-                'where' => [self::getTableName() . '.id = ' . $this->id],
-                'join' => self::getJoinQueryTo('meeting')
-            ]);
+            $this->meetings = Meeting::getAllOfUser($this->id);
             if (is_null($this->meetings)) $this->meetings = [];
         }
     }
