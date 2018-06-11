@@ -42,14 +42,10 @@ class UserApi extends Api
         if (! static::checkIfTokenExists()) return self::getHttpCode(400);
 
         $model = self::getModel();
-
         if ($id > 0) {
             $user = $model::find($id);
             if (self::checkToken($user->token)) return $user;
-        } elseif (
-            self::checkIfTokenExists() 
-            && $model::tokenExistsInDB(self::getTokenFromHeaders())
-        ) {
+        } elseif ($model::tokenExistsInDB(self::getTokenFromHeaders())) {
             return $model::findAll();
         }
 

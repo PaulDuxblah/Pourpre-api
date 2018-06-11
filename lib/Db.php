@@ -49,7 +49,14 @@ class Db
             return $result;
         }
 
-        $rows = $result->fetch_assoc();
+        $rows = [];
+        if ($result->num_rows > 1) {
+            while($row = $result->fetch_assoc()) {
+                $rows[] = $row;
+            }
+        } else {
+            $rows = $result->fetch_assoc();
+        }
 
         if (count($rows) == 1 && !is_array(reset($rows))) {
             return reset($rows);

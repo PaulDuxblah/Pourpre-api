@@ -14,7 +14,7 @@ abstract class Model
 
     abstract public static function getKeysNeededToCreate();
 
-    protected static function select($params)
+    protected static function select($params = [])
     {
         $params['from'] = static::getTableName();
         return self::convertDbResultToObject(Db::select($params));
