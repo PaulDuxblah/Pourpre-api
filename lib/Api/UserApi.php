@@ -26,9 +26,8 @@ class UserApi extends Api
 
     public static function findBy($param, $search)
     {
-        $user = static::select([
-            'where' => $param . ' LIKE "%' . Db::escapeVar($search) . '%"'
-        ]);
+        $model = self::getModel();
+        $user = $model::findBy($param, $search);
 
         if (!$user) {
             return false;

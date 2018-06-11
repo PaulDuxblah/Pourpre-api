@@ -31,7 +31,7 @@ class Db
         return $mysqli->real_escape_string($var);
     }
 
-    public static function select($params = [])
+    public static function select($params = [], $returnMany = false)
     {
         $query = '';
 
@@ -50,7 +50,7 @@ class Db
         }
 
         $rows = [];
-        if ($result->num_rows > 1) {
+        if ($returnMany) {
             while($row = $result->fetch_assoc()) {
                 $rows[] = $row;
             }

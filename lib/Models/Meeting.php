@@ -39,7 +39,7 @@ class Meeting extends Model
             'select' => [self::getTableName() . '.*'],
             'where' => [User::getTableName() . '.id = ' . $id],
             'join' => self::getJoinQueryTo('user')
-        ]);
+        ], true);
     }
 
     public function __construct($params = []) {

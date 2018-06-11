@@ -14,10 +14,10 @@ abstract class Model
 
     abstract public static function getKeysNeededToCreate();
 
-    protected static function select($params = [])
+    protected static function select($params = [], $returnMany = false)
     {
         $params['from'] = static::getTableName();
-        return self::convertDbResultToObject(Db::select($params));
+        return self::convertDbResultToObject(Db::select($params, $returnMany));
     }
 
     public static function convertDbResultToObject($dbResult)
@@ -59,14 +59,14 @@ abstract class Model
 
     public static function findAll()
     {
-        return static::select();
+        return static::select([], true);
     }
 
     public static function findBy($param, $search)
     {
         return static::select([
             'where' => $param . ' LIKE "%' . Db::escapeVar($search) . '%"'
-        ]);
+        ], true);
     }
 
     public static function find($id)
